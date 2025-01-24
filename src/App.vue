@@ -34,24 +34,16 @@ const total = computed(() => {
 // 取得收入
 const income = computed(() => {
     return transactions.value
-        .filter(() => {
-            transaction.amount > 0
-        })
-        .reduce((acc, transaction) => {
-            return acc + transaction.amount;
-        }, 0)
+        .filter((transaction) => transaction.amount > 0)
+        .reduce((acc, transaction) => acc + transaction.amount, 0)
         .toFixed(2);
 });
 
 // 取得支出
 const expenses = computed(() => {
     return transactions.value
-        .filter(() => {
-            transaction.amount < 0
-        })
-        .reduce((acc, transaction) => {
-            return acc + transaction.amount;
-        }, 0)
+        .filter((transaction) => transaction.amount < 0)
+        .reduce((acc, transaction) => acc + transaction.amount, 0)
         .toFixed(2);
 });
 
