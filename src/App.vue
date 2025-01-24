@@ -2,8 +2,8 @@
     <Header />
     <div class="container">
         <Balance :total="total" />
-        <IncomeExpenses />
-        <TransactionList :transactions = "transactions" />
+        <IncomeExpenses :income="income" :expenses="expenses" />
+        <TransactionList :transactions="transactions" />
         <AddTransaction />
     </div>
 </template>
@@ -17,17 +17,42 @@ import AddTransaction from './components/AddTransaction.vue';
 
 import { ref, computed } from 'vue';
 
-const transactions = ref( [
+const transactions = ref([
     { id: 1, text: 'Flower', amount: -19.99 },
     { id: 2, text: 'Salary', amount: 300 },
     { id: 3, text: 'Book', amount: -27.99 },
     { id: 2, text: 'Cash dividend', amount: 90 },
 ]);
 
-const total = computed(()=>{
-    return transactions.value.reduce((acc, transaction)=>{
+// 取得總額
+const total = computed(() => {
+    return transactions.value.reduce((acc, transaction) => {
         return acc + transaction.amount;
     }, 0);
+});
+
+// 取得收入
+const income = computed(() => {
+    return transactions.value
+        .filter(() => {
+            transaction.amount > 0
+        })
+        .reduce((acc, transaction) => {
+            return acc + transaction.amount;
+        }, 0)
+        .toFixed(2);
+});
+
+// 取得支出
+const expenses = computed(() => {
+    return transactions.value
+        .filter(() => {
+            transaction.amount < 0
+        })
+        .reduce((acc, transaction) => {
+            return acc + transaction.amount;
+        }, 0)
+        .toFixed(2);
 });
 
 </script>
