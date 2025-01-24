@@ -22,6 +22,9 @@
 
   const text = ref('');
   const amount = ref('');
+
+  const emit = defineEmits(['transactionSubmitted']);
+
   const toast = useToast();
 
   const onSubmit = ()=>{
@@ -30,7 +33,14 @@
       return;
     }
     // console.log('submit');
-    console.log(text.value, amount.value); // 測試輸入資料，console.log資料有進去
+    // console.log(text.value, amount.value); // 測試輸入資料，console.log資料有進去
+
+    const transactionData = {
+      text: text.value,
+      amount: parseFloat(amount.value),
+    }
+
+    emit('transactionSubmitted', transactionData);
 
     text.value = '';
     amount.value = '';
