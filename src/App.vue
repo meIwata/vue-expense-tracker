@@ -1,8 +1,8 @@
 <template>
     <Header />
     <div class="container">
-        <Balance />
-        <IncomeExpenses :total="total" />
+        <Balance :total="total" />
+        <IncomeExpenses />
         <TransactionList :transactions = "transactions" />
         <AddTransaction />
     </div>
