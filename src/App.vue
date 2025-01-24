@@ -3,7 +3,7 @@
     <div class="container">
         <Balance :total="+total" />
         <IncomeExpenses :income="+income" :expenses="-expenses" />
-        <TransactionList :transactions="transactions" />
+        <TransactionList :transactions="transactions" @transactionDeleted="handleTransactionDeleted" />
         <AddTransaction @transactionSubmitted="handleTransactionSubmitted" />
     </div>
 </template>
@@ -17,16 +17,24 @@ import AddTransaction from './components/AddTransaction.vue';
 
 import { useToast } from 'vue-toastification';
 
-import { ref, computed } from 'vue';
+import { ref, computed, onMounted } from 'vue';
 
 const toast = useToast();
 
 const transactions = ref([
-    { id: 1, text: 'Flower', amount: -19.99 },
-    { id: 2, text: 'Salary', amount: 300 },
-    { id: 3, text: 'Book', amount: -27.99 },
-    { id: 2, text: 'Cash dividend', amount: 90 },
+    // { id: 1, text: 'Flower', amount: -19.99 },
+    // { id: 2, text: 'Salary', amount: 300 },
+    // { id: 3, text: 'Book', amount: -27.99 },
+    // { id: 2, text: 'Cash dividend', amount: 90 },
+
 ]);
+
+onMounted(()=>{
+    const savedTransactions = JSON.parse(localStorage.getItem('transactions'));
+    if (savedTransactions) {
+    transactions.value = savedTransactions;
+    }
+})
 
 // 取得總額
 const total = computed(() => {
@@ -51,14 +59,16 @@ const expenses = computed(() => {
         .toFixed(2);
 });
 
-// 增加交易
-const handleTransactionSubmitted = (transactionData)=>{
+// 送出交易
+const handleTransactionSubmitted = (transactionData) => {
     // console.log(transactionData);
     transactions.value.push({
-    id: generateUniqueId(),
-    text: transactionData.text,
-    amount: transactionData.amount
-  });
+        id: generateUniqueId(),
+        text: transactionData.text,
+        amount: transactionData.amount
+    });
+
+    saveTransactionsToLocalStorage();
 
     // console.log(generateUniqueId());
     toast.success('Transaction added.');
@@ -66,7 +76,24 @@ const handleTransactionSubmitted = (transactionData)=>{
 
 // 產生 unique ID
 const generateUniqueId = () => {
-  return Math.floor(Math.random() * 1000000);
+    return Math.floor(Math.random() * 1000000);
 };
+
+// 刪除交易
+const handleTransactionDeleted = (id) => {
+    // console.log(id);
+    transactions.value = transactions.value.filter(
+        (transaction) => transaction.id !== id
+    );
+
+    saveTransactionsToLocalStorage();
+
+    toast.success('Transaction deleted');
+}
+
+// 儲存至本機
+const saveTransactionsToLocalStorage = () => {
+  localStorage.setItem('transactions', JSON.stringify(transactions.value));
+}
 
 </script>
