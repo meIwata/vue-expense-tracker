@@ -27,3 +27,6 @@ npm run dev
 ```sh
 npm run build
 ```
+
+## Project outcome
+![Project outcome](image.png)
